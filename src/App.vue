@@ -9,6 +9,18 @@
               fit="cover"
           />
         </el-col>
+        <div style="
+        position: absolute;
+        float: right;
+        right: 30px;
+        margin-top: 15px;
+        vertical-align: middle;
+        color: white"
+        >
+          By Lin Yuhang, Zeng Xianqing : )
+        </div>
+
+
         <el-divider direction="vertical" border-style=" solid" style="height: 50px;margin-top: 5px;"/>
         <div style="
           line-height:60px;
@@ -25,20 +37,20 @@
     </el-header>
     <!--  </el-container>-->
     <el-main style="flex: 1">
-      <div style="width: 72%;position: relative;transform: translateX(19.44%);">
+      <div style="width: 90%;position: relative;transform: translateX(5%);">
         <el-container>
           <el-header>
             <el-menu
                 class="el-menu-demo"
                 mode="horizontal"
-                :router=true
+                default-active="openai"
                 background-color="#545c64"
                 text-color="#fff"
                 active-text-color="#ffd04b"
                 style="height: 100%"
             >
-              <el-menu-item index="/student/course" ><h3>openai/gym</h3></el-menu-item>
-              <el-menu-item index="/student/announcement"><h3>babysor/MockingBird</h3></el-menu-item>
+              <el-menu-item index="openai" @click="change_to_openai"><h3>openai/gym</h3></el-menu-item>
+              <el-menu-item index="babysor" @click="change_to_babysor"><h3>babysor/MockingBird</h3></el-menu-item>
             </el-menu>
           </el-header>
           <el-main>
@@ -64,21 +76,22 @@
                             active-text-color="#ffd04b"
                             background-color="#545c64"
                             class="el-menu-vertical-demo"
-                            default-active="2"
+                            default-active="1"
                             text-color="#fff"
                             style="width: 100%;height: 100%"
+                            :router="true"
                         >
                           <!--              :router="true"-->
-                          <el-menu-item index="1" style="text-align:center" route="/student/announcement">
+                          <el-menu-item index="/developer">
                             <span>Developers</span>
                           </el-menu-item>
-                          <el-menu-item index="2" >
+                          <el-menu-item index="/issue">
                             <span>Issues</span>
                           </el-menu-item>
-                          <el-menu-item index="3">
+                          <el-menu-item index="/release">
                             <span>Releases</span>
                           </el-menu-item>
-                          <el-menu-item index="4">
+                          <el-menu-item index="/commit">
                             <span>Commits</span>
                           </el-menu-item>
                         </el-menu>
@@ -88,15 +101,15 @@
                   </el-aside>
                   <el-main>
                     <div>
-                      <h2>test</h2>
-
+                      <router-view/>
                     </div>
                   </el-main>
                 </el-container>
               </el-container>
             </div>
           </el-main>
-        </el-container>      </div>
+        </el-container>
+      </div>
     </el-main>
     <!--  <el-container>-->
     <el-footer style="background-color: black;margin-top: 100px;color :white;">
@@ -105,8 +118,20 @@
   </el-container>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+import {useStore} from "vuex";
 
+export default {
+  name: 'App',
+  setup() {
+    const store = useStore()
+
+    return {
+      change_to_babysor: () => store.dispatch('set_repo_to_babysor'),
+      change_to_openai: () => store.dispatch('set_repo_to_openai'),
+    }
+  }
+}
 </script>
 
 <style scoped>
