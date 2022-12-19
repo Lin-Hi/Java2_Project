@@ -12,7 +12,7 @@
 
 <script>
 // 基于准备好的dom，初始化echarts实例
-import {computed, onBeforeMount, onMounted} from "vue";
+import {onBeforeUnmount, onMounted} from "vue";
 import * as echarts from "echarts";
 import {useStore} from "vuex";
 import axios from 'axios';
@@ -21,10 +21,11 @@ export default {
   name: "Developer",
   setup() {
     const store = useStore()
-    let repo_name = computed(() => store.state.repo_name)
+    let repo_name = store.state.repo_name
+    let timer = null
 
     function initializeOverview() {
-      axios.get(`http://localhost:8080/api/developers/all?repoName=${repo_name.value}`)
+      axios.get(`http://localhost:8080/api/developers/all?repoName=${repo_name}`)
           .then(response => {
             const developers = response.data
             let all_contributions = 0
@@ -95,7 +96,7 @@ export default {
     }
 
     function initializeTop() {
-      axios.get(`http://localhost:8080/api/developers/top?repoName=${repo_name.value}`)
+      axios.get(`http://localhost:8080/api/developers/top?repoName=${repo_name}`)
           .then(response => {
             const developers = response.data
             const accounts = []
@@ -215,6 +216,19 @@ export default {
     onMounted(() => {
       initializeOverview()
       initializeTop()
+      timer = setInterval(() => {
+        const new_name = store.state.repo_name
+        if (new_name !== repo_name) {
+          repo_name = new_name
+          initializeTop()
+          initializeOverview()
+        }
+      }, 200)
+    })
+
+    onBeforeUnmount(() => {
+      clearInterval(timer)
+      timer = null
     })
 
     return {
