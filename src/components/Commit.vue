@@ -12,17 +12,17 @@
 
   <div style="display: flex;justify-content: center">
     <div id="hour"
-         style="width: 85%;height:450px;display: flex;justify-content: center"/>
+         style="width: 85%;height:350px;display: flex;justify-content: center"/>
   </div>
   <el-divider style="margin: 0 0 30px 0"/>
   <div style="display: flex;justify-content: center">
     <div id="weekday"
-         style="width: 85%;height:450px;display: flex;justify-content: center"/>
+         style="width: 85%;height:350px;display: flex;justify-content: center"/>
   </div>
   <el-divider style="margin: 0 0 30px 0"/>
   <div style="display: flex;justify-content: center">
     <div id="month"
-         style="width: 85%;height:450px;display: flex;justify-content: center"/>
+         style="width: 85%;height:350px;display: flex;justify-content: center"/>
   </div>
 </template>
 
