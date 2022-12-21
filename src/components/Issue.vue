@@ -1,12 +1,17 @@
 <template>
   <div style="display: flex;justify-content: center">
     <div id="count"
-         style="width: 400px;height:400px;display: flex;justify-content: center"/>
+         style="width: 400px;height:400px;"/>
   </div>
   <el-divider style="margin: 30px 0 30px 0"/>
   <div style="display: flex;justify-content: center">
     <div id="duration"
-         style="width: 85%;height:600px;display: flex;justify-content: center"/>
+         style="width: 85%;height:600px;"/>
+  </div>
+  <el-divider style="margin: 0 0 30px 0"/>
+  <div style="display: flex;justify-content: center;">
+    <div id="words"
+         style="width: 85%;height:400px;"/>
   </div>
 </template>
 
@@ -16,6 +21,7 @@ import axios from 'axios';
 import {useStore} from "vuex";
 import {onBeforeUnmount, onMounted, reactive, ref} from "vue";
 import * as echarts from "echarts";
+import 'echarts-wordcloud';
 
 export default {
   name: "Issue",
@@ -28,6 +34,7 @@ export default {
     })
     let durations = ref([])
     let timer = null
+    let wordsFrequency = ref([])
 
     async function refresh() {
       await axios.get(`http://localhost:8080/api/issues/count?repoName=${repo_name}&state=open`)
@@ -39,10 +46,13 @@ export default {
       await axios.get(`http://localhost:8080/api/issues/durations?repoName=${repo_name}`)
           .then(response => durations.value = response.data)
           .catch(error => console.log(error))
+      await axios.get(`http://localhost:8080/api/words/frequency?repoName=${repo_name}`)
+          .then(response => wordsFrequency.value = response.data)
+          .catch(error => console.log(error))
       drawCount()
       drawDurations()
+      drawWordsCloud()
     }
-
 
     function drawCount() {
       const chartDom = document.getElementById('count');
@@ -92,7 +102,6 @@ export default {
       option && myChart.setOption(option);
     }
 
-
     function getDays(number) {
       const temp = (number / (60 * 60 * 24))
       let ans
@@ -124,7 +133,6 @@ export default {
       }
       return Math.sqrt(s / arr.length).toFixed(2)
     }
-
 
     function drawDurations() {
       const data = []
@@ -183,6 +191,48 @@ export default {
         ]
       };
       option && myChart.setOption(option);
+    }
+
+    function getRandomColor() {
+      return 'rgb(' + [
+        Math.round(Math.random() * 160),
+        Math.round(Math.random() * 160),
+        Math.round(Math.random() * 160)
+      ].join(',') + ')';
+    }
+
+    function drawWordsCloud() {
+      const data = []
+      for (let i = 0; i < wordsFrequency.value.length; i++) {
+        data.push({
+          name: wordsFrequency.value[i].text,
+          value: wordsFrequency.value[i].count,
+          textStyle: {
+            color: getRandomColor(),
+          }
+        })
+      }
+      const chart = echarts.init(document.getElementById('words'));
+      console.log(data)
+      chart.setOption({
+        series: [{
+          type: 'wordCloud',
+          shape: 'circle', //circle cardioid diamond triangle-forward triangle
+          left: 0,
+          right: 0,
+          top: 0,
+          width: '100%',
+          height: '100%',
+          sizeRange: [10, 50], //word的字体大小区间，单位像素
+          rotationRange: [-40, 40], //word的可旋转角度区间
+          rotationStep: 5,
+          gridSize: 5, //值越大，word间的距离越大，单位像素
+          drawOutOfBound: false,
+          shrinkToFit: false,
+          layoutAnimation: true,
+          data: data,
+        }],
+      });
     }
 
 
