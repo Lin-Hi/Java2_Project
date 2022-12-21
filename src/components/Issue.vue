@@ -111,8 +111,12 @@ export default {
         ans = temp.toFixed(1)
       else if (temp > 1) {
         ans = temp.toFixed(2)
+      } else if (number / 60 > 100) {
+        ans = temp.toFixed(2)
+      } else if (number > 60) {
+        return (number / 60).toFixed(1) + ' minutes'
       } else {
-        ans = temp.toFixed(4)
+        return number + ' seconds'
       }
       return ans + ' days'
     }
@@ -215,6 +219,10 @@ export default {
       const chart = echarts.init(document.getElementById('words'));
       console.log(data)
       chart.setOption({
+        title: {
+          text: 'Issue Topic',
+          left: 'center',
+        },
         series: [{
           type: 'wordCloud',
           shape: 'circle', //circle cardioid diamond triangle-forward triangle
