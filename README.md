@@ -1,6 +1,6 @@
 # cs209project_frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+此仓库为 CS209 项目：Github 仓库数据可视化平台 的前端，后端代码见[此仓库](https://github.com/tsukii7/CS209project)。
 
 ## Recommended IDE Setup
 
